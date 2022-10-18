@@ -14,6 +14,7 @@ import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
+import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -94,7 +95,9 @@ class AlarmService : Service() {
             }
         }
         val pattern = longArrayOf(0, 100, 1000)
-        vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0))
+        val vibAttr =
+            VibrationAttributes.Builder().setUsage(VibrationAttributes.USAGE_ALARM).build()
+        vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0), vibAttr)
 
         startForeground(1, notification)
 
@@ -103,7 +106,7 @@ class AlarmService : Service() {
 
     override fun onDestroy() {
         super.onDestroy();
-        mediaPlayer.stop();
+        if (mediaPlayer.isPlaying) mediaPlayer.stop()
         vibrator.cancel();
     }
 
