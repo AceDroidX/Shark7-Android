@@ -1,0 +1,26 @@
+package io.github.acedroidx.shark7
+
+enum class Scope(val id: String, val desc: String) {
+    Log_Debug("Log.Debug","Debug"),
+    Log_Info("Log.Info","Info"),
+    Log_Warn("Log.Warn","Warn"),
+    Log_Error("Log.Error","Error"),
+    Apex("Apex","Apex信息"),
+    Weibo_User("Weibo.User","微博用户信息"),
+    Weibo_Mblog("Weibo.Mblog","微博动态"),
+    Weibo_Comment("Weibo.Comment","微博评论"),
+    Weibo_Like("Weibo.Like","微博点赞"),
+    Weibo_Online("Weibo.Online","微博在线"),
+    BiliLive_GuardOnline("BiliLive.GuardOnline","大航海在线"),
+    BiliLive_EntryEffect("BiliLive.EntryEffect","直播间进入效果"),
+    BiliLive_EntryWord("BiliLive.EntryWord","直播间进入提示"),
+    BiliLive_Danmaku("BiliLive.Danmaku","发送弹幕"),
+    BiliLive_Gift("BiliLive.Gift","赠送礼物"),
+    BiliLive_Live("BiliLive.Live","直播间状态"),
+    BiliLive_User("Bilibili.User","B站用户信息"),
+    Bilibili_Coin("Bilibili.Coin","B站投币视频"),
+    Bilibili_Like("Bilibili.Like","B站点赞视频"),
+    Bilibili_Dynamic("Bilibili.Dynamic","B站动态"),
+    Douyin_User("Douyin.User","抖音用户信息"),
+    NeteaseMusic_User("NeteaseMusic.User","网易云音乐用户信息"),
+}
