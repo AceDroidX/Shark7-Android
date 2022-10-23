@@ -59,6 +59,8 @@ class AlarmService : Service() {
 //            val descriptionText = ""
             val importance = NotificationManager.IMPORTANCE_MAX
             val mChannel = NotificationChannel("AlarmService", name, importance)
+            mChannel.setSound(null, null)
+            mChannel.enableVibration(false)
 //            mChannel.description = descriptionText
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
@@ -69,7 +71,8 @@ class AlarmService : Service() {
             .setContentTitle("Ring")
             .setContentText("test")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setSound(null)
+            .setOngoing(true)
+            .setSilent(true)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_MAX)

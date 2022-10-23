@@ -1,8 +1,7 @@
-package io.github.acedroidx.shark7
+package io.github.acedroidx.shark7.ui
 
 import android.app.Service
 import android.content.Context
-import android.content.Intent
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaRouter
@@ -10,19 +9,16 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.acedroidx.shark7.AudioDeviceType
 import javax.inject.Inject
 
-
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class DebugViewModel @Inject constructor() : ViewModel() {
     val token = MutableLiveData<String>().apply { value = "" }
     val routeInfo = MutableLiveData<String>().apply { value = "" }
     val audioDevicesInfo = MutableLiveData<String>().apply { value = "" }
-
 
     fun getToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
@@ -37,28 +33,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
             Log.d("MainViewModel", "Token:$result")
             token.value = result
         })
-    }
-
-    fun subscribeTopic(topic: String) {
-        Firebase.messaging.subscribeToTopic(topic)
-            .addOnCompleteListener { task ->
-                var msg = "Subscribed"
-                if (!task.isSuccessful) {
-                    msg = "Subscribe failed"
-                }
-                Log.d("MainViewModel", "subscribeTopic:$msg")
-            }
-    }
-
-    fun startService(context: Context, audioAttributes: MyAudioAttributes) {
-        val intentService = Intent(context, AlarmService::class.java)
-        intentService.putExtra("AudioAttributes", audioAttributes.value)
-        context.startService(intentService)
-    }
-
-    fun stopService(context: Context) {
-        val intentService = Intent(context, AlarmService::class.java)
-        context.stopService(intentService)
     }
 
     fun getRouteInfo(context: Context) {

@@ -4,8 +4,22 @@ import android.content.Intent
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+    @Inject
+    lateinit var settingsRepository: SettingsRepository
+
+    // https://stackoverflow.com/questions/63405673/how-to-call-suspend-function-from-service-android
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.IO + job)
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.i("MyFirebaseMessagingService", "onNewToken:$token")
@@ -18,10 +32,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
             Log.d("MyFirebaseMessagingService", "Message data payload: ${remoteMessage.data}")
-            val event = Shark7Event(remoteMessage.data)
-            if (event.scope == Scope.BiliLive_Live.id || event.scope == Scope.Weibo_Mblog.desc) {
-                val intentService = Intent(baseContext, AlarmService::class.java)
-                baseContext.startService(intentService)
+            scope.launch {
+                if (settingsRepository.getEnableAlarm().first()) {
+                    val event = Shark7Event(remoteMessage.data)
+                    if (event.scope == Scope.BiliLive_Live.id || event.scope == Scope.Weibo_Mblog.id) {
+                        val intentService = Intent(baseContext, AlarmService::class.java)
+                        baseContext.startService(intentService)
+                    }
+                }
             }
         }
 
@@ -34,5 +52,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // message, here is where that should be initiated. See sendNotification method below.
 
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 }
