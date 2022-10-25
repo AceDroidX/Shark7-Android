@@ -5,6 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.mutablePreferencesOf
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
@@ -20,9 +22,15 @@ class SettingsRepository @Inject constructor(@ApplicationContext val context: Co
     }
 
     suspend fun setEnableAlarm(value: Boolean) = context.dataStore.edit { preferences ->
-        preferences[booleanPreferencesKey(
-            "enable_alarm"
-        )] = value
+        preferences[booleanPreferencesKey("enable_alarm")] = value
+    }
+
+    fun getAlarmScope() = context.dataStore.data.map { preferences ->
+        preferences[stringSetPreferencesKey("alarm_scope")] ?: emptySet()
+    }
+
+    suspend fun setAlarmScope(value: Set<String>) = context.dataStore.edit { preferences ->
+        preferences[stringSetPreferencesKey("alarm_scope")] = value
     }
 
 }

@@ -51,4 +51,8 @@ class MainViewModel @Inject constructor(val settingsRepository: SettingsReposito
         val intent = Intent(context, DebugActivity::class.java)
         context.startActivity(intent)
     }
+    fun openAlarmScopeActivity(context: Context) {
+        val intent = Intent(context, AlarmScopeActivity::class.java)
+        context.startActivity(intent)
+    }
 }

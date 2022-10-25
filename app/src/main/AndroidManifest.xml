@@ -18,6 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Shark7"
         tools:targetApi="tiramisu">
+        <activity
+            android:name=".ui.AlarmScopeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_alarm_scope"
+            android:theme="@style/Theme.Shark7" />
+
         <receiver
             android:name=".MyBroadcastReceiver"
             android:enabled="true"
@@ -46,7 +52,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.DebugActivity"
             android:exported="true"

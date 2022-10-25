@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Shark7</string>
+    <string name="title_activity_alarm_scope">AlarmScopeActivity</string>
 </resources>

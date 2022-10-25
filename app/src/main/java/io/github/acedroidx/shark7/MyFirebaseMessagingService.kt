@@ -35,7 +35,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             scope.launch {
                 if (settingsRepository.getEnableAlarm().first()) {
                     val event = Shark7Event(remoteMessage.data)
-                    if (event.scope == Scope.BiliLive_Live.id || event.scope == Scope.Weibo_Mblog.id) {
+                    if (settingsRepository.getAlarmScope().first().contains(event.scope)) {
                         val intentService = Intent(baseContext, AlarmService::class.java)
                         baseContext.startService(intentService)
                     }

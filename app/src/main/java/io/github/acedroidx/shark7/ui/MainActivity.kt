@@ -97,6 +97,9 @@ class MainActivity : ComponentActivity() {
             Button(onClick = { viewModel.openDebugActivity(this@MainActivity) }) {
                 Text(text = "Open DebugActivity")
             }
+            Button(onClick = { viewModel.openAlarmScopeActivity(this@MainActivity) }) {
+                Text(text = "Open AlarmScopeActivity")
+            }
         }
     }
 
