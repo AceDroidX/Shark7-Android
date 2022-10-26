@@ -48,11 +48,17 @@ class AlarmService : Service() {
         val audioAttrUsage = intent?.getIntExtra(
             "AudioAttributes", MyAudioAttributes.USAGE_ASSISTANT.value
         ) ?: MyAudioAttributes.USAGE_ASSISTANT.value
-        val stopAlarmIntent = Intent(this, MyBroadcastReceiver::class.java).apply {
+        val disableAlarmIntent = Intent(this, MyBroadcastReceiver::class.java).apply {
+            putExtra(EXTRA_NOTIFICATION_ID, 0)
+            putExtra("disable_alarm", true)
+        }
+        val disableAlarmPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(this, 0, disableAlarmIntent, PendingIntent.FLAG_MUTABLE)
+        val stopOnceAlarmIntent = Intent(this, MyBroadcastReceiver::class.java).apply {
             putExtra(EXTRA_NOTIFICATION_ID, 0)
         }
-        val stopAlarmPendingIntent: PendingIntent =
-            PendingIntent.getBroadcast(this, 0, stopAlarmIntent, PendingIntent.FLAG_IMMUTABLE)
+        val stopOnceAlarmPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(this, 0, stopOnceAlarmIntent, PendingIntent.FLAG_MUTABLE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
             val name = "AlarmService"
@@ -77,7 +83,8 @@ class AlarmService : Service() {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_MAX)
 //            .setFullScreenIntent(pendingIntent, true)
-            .addAction(R.drawable.ic_launcher_foreground, "停止", stopAlarmPendingIntent)
+            .addAction(R.drawable.ic_launcher_foreground, "全局关闭", disableAlarmPendingIntent)
+            .addAction(R.drawable.ic_launcher_foreground, "停止本次", stopOnceAlarmPendingIntent)
             .build()
 
         val ringtone = RingtoneManager.getActualDefaultRingtoneUri(
