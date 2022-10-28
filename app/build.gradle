@@ -5,6 +5,7 @@ plugins {
     id 'com.google.dagger.hilt.android'
     // Add the Google services Gradle plugin
     id 'com.google.gms.google-services'
+    id 'kotlin-parcelize'
 }
 
 def keystorePropertiesFile = rootProject.file("local.properties")

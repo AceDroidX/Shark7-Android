@@ -45,6 +45,7 @@ class AlarmService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val event = intent?.getParcelableExtra("Shark7Event", Shark7Event::class.java)
         val audioAttrUsage = intent?.getIntExtra(
             "AudioAttributes", MyAudioAttributes.USAGE_ASSISTANT.value
         ) ?: MyAudioAttributes.USAGE_ASSISTANT.value
@@ -73,9 +74,10 @@ class AlarmService : Service() {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
         }
+        val content = event?.toString() ?: "null"
         val notification: Notification = NotificationCompat.Builder(this, "AlarmService")
             .setContentTitle("Ring")
-            .setContentText("test")
+            .setContentText(content)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(true)
             .setSilent(true)

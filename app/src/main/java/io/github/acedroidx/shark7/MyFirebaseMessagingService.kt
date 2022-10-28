@@ -37,6 +37,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     val event = Shark7Event(remoteMessage.data)
                     if (settingsRepository.getAlarmScope().first().contains(event.scope)) {
                         val intentService = Intent(baseContext, AlarmService::class.java)
+                        intentService.putExtra("Shark7Event",event)
                         baseContext.startService(intentService)
                     }
                 }
