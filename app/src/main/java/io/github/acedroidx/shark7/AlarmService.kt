@@ -14,6 +14,7 @@ import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -27,6 +28,7 @@ import java.util.TimerTask
 class AlarmService : Service() {
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private lateinit var vibrator: Vibrator
+    private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -123,6 +125,12 @@ class AlarmService : Service() {
 
         startForeground(1, notification)
 
+        wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Shark7::MyWakelockTag").apply {
+                acquire()
+            }
+        }
+
         return START_STICKY
     }
 
@@ -130,6 +138,7 @@ class AlarmService : Service() {
         super.onDestroy();
         if (mediaPlayer.isPlaying) mediaPlayer.stop()
         vibrator.cancel();
+        wakeLock?.release()
     }
 
     fun isHeadphone(): Boolean {
