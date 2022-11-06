@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,10 +35,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             Log.d("MyFirebaseMessagingService", "Message data payload: ${remoteMessage.data}")
             scope.launch {
                 if (settingsRepository.getEnableAlarm().first()) {
-                    val event = Shark7Event(remoteMessage.data)
+                    val data = Shark7FcmData(remoteMessage.data)
+                    val event = Gson().fromJson(data.event, Shark7Event::class.java)
                     if (settingsRepository.getAlarmScope().first().contains(event.scope)) {
                         val intentService = Intent(baseContext, AlarmService::class.java)
-                        intentService.putExtra("Shark7Event",event)
+                        intentService.putExtra("Shark7Event", event)
                         baseContext.startService(intentService)
                     }
                 }

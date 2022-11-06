@@ -5,11 +5,12 @@ import kotlinx.parcelize.Parcelize
 
 // https://stackoverflow.com/questions/51898966/convert-a-map-to-a-data-class
 @Parcelize
-public class Shark7Event(val map: Map<String, String>) : Parcelable {
-    val ts by map
-    val name by map
-    val scope by map
-    val msg by map
+public class Shark7Event(
+    val ts: Long,
+    val name: String,
+    val scope: String,
+    val msg: String,
+) : Parcelable {
     override fun toString(): String {
         return "<$name>($scope)\n$msg"
     }
