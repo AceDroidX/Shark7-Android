@@ -59,7 +59,7 @@ class AlarmService : Service() {
             putExtra(EXTRA_NOTIFICATION_ID, 0)
         }
         val stopOnceAlarmPendingIntent: PendingIntent =
-            PendingIntent.getBroadcast(this, 0, stopOnceAlarmIntent, PendingIntent.FLAG_MUTABLE)
+            PendingIntent.getBroadcast(this, 1, stopOnceAlarmIntent, PendingIntent.FLAG_MUTABLE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
             val name = "AlarmService"
