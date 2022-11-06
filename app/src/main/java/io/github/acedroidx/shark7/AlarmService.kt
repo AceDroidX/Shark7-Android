@@ -20,6 +20,8 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.core.app.NotificationCompat
 import java.io.IOException
+import java.util.Timer
+import java.util.TimerTask
 
 
 class AlarmService : Service() {
@@ -110,6 +112,14 @@ class AlarmService : Service() {
         val vibAttr =
             VibrationAttributes.Builder().setUsage(VibrationAttributes.USAGE_ALARM).build()
         vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0), vibAttr)
+
+        val timerTask = object : TimerTask() {
+            override fun run() {
+                stopSelf()
+            }
+        }
+        val timer = Timer()
+        timer.schedule(timerTask, 3 * 60 * 1000)
 
         startForeground(1, notification)
 
