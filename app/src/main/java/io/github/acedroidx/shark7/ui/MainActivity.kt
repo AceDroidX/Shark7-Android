@@ -15,19 +15,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import dagger.hilt.android.AndroidEntryPoint
-import io.github.acedroidx.shark7.ui.theme.Shark7Theme
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import io.github.acedroidx.shark7.MyAudioAttributes
+import androidx.compose.ui.Modifier
+import dagger.hilt.android.AndroidEntryPoint
+import io.github.acedroidx.shark7.ui.compose.SubscribeTopic
+import io.github.acedroidx.shark7.ui.theme.Shark7Theme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -36,6 +38,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SubscribeTopic.subscribeTopic("main")
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         setContent {
             Shark7Theme {
@@ -56,14 +59,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun MainContent() {
         val enableAlarm by viewModel.enableAlarm.collectAsState(initial = false)
-        var topic by remember { mutableStateOf("") }
-        var audioAttr by remember { mutableStateOf(MyAudioAttributes.USAGE_ASSISTANT) }
         Column {
-            Greeting("Android")
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     "Enable Alarm",
@@ -73,32 +72,11 @@ class MainActivity : ComponentActivity() {
                     checked = enableAlarm,
                     onCheckedChange = { viewModel.setEnableAlarm(it) })
             }
-            OutlinedTextField(
-                value = topic,
-                label = { Text("topic") },
-                onValueChange = { topic = it })
-            Button(onClick = { viewModel.subscribeTopic(topic) }) {
-                Text(text = "subscribeTopic")
-            }
-            Row {
-                Button(onClick = {
-                    viewModel.startService(
-                        baseContext,
-                        audioAttr
-                    )
-                }) {
-                    Text(text = "StartService")
-                }
-                Button(onClick = { viewModel.stopService(baseContext) }) {
-                    Text(text = "StopService")
-                }
-            }
-            audioAttrCompose(audioAttr) { audioAttr = it }
-            Button(onClick = { viewModel.openDebugActivity(this@MainActivity) }) {
-                Text(text = "Open DebugActivity")
-            }
             Button(onClick = { viewModel.openAlarmScopeActivity(this@MainActivity) }) {
                 Text(text = "Open AlarmScopeActivity")
+            }
+            Button(onClick = { viewModel.openDebugActivity(this@MainActivity) }) {
+                Text(text = "Open DebugActivity")
             }
         }
     }
@@ -111,58 +89,6 @@ class MainActivity : ComponentActivity() {
             // FCM SDK (and your app) can post notifications.
         } else {
             // TODO: Inform user that that your app will not show notifications.
-        }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    Shark7Theme {
-        Greeting("Android")
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun audioAttrCompose(audioAttr: MyAudioAttributes, onSelected: (MyAudioAttributes) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-    ) {
-        OutlinedTextField(
-            modifier = Modifier.menuAnchor(),
-            readOnly = true,
-            value = audioAttr.name,
-            onValueChange = {},
-            label = { Text("AudioAttributes") },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded
-                )
-            },
-            // colors = ExposedDropdownMenuDefaults.textFieldColors(),
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            MyAudioAttributes.values().forEach { selectionOption ->
-                DropdownMenuItem(
-                    text = { Text(selectionOption.name) },
-                    onClick = {
-                        onSelected(selectionOption)
-                        expanded = false
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                )
-            }
         }
     }
 }
