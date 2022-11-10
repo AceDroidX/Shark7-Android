@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,7 +34,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
             Log.d("MyFirebaseMessagingService", "Message data payload: ${remoteMessage.data}")
-            scope.launch {
+            runBlocking {
                 if (settingsRepository.getEnableAlarm().first()) {
                     val data = Shark7FcmData(remoteMessage.data)
                     val event = Gson().fromJson(data.event, Shark7Event::class.java)
