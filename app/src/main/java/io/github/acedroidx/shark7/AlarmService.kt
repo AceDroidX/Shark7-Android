@@ -2,8 +2,6 @@ package io.github.acedroidx.shark7
 
 import android.app.Notification
 import android.app.Notification.EXTRA_NOTIFICATION_ID
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
@@ -20,12 +18,17 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.core.app.NotificationCompat
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import java.util.Timer
 import java.util.TimerTask
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class AlarmService : Service() {
+    @Inject
+    lateinit var myNotificationManager: MyNotificationManager
+
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private lateinit var vibrator: Vibrator
     private var wakeLock: PowerManager.WakeLock? = null
@@ -64,20 +67,7 @@ class AlarmService : Service() {
         }
         val stopOnceAlarmPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(this, 1, stopOnceAlarmIntent, PendingIntent.FLAG_MUTABLE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the NotificationChannel
-            val name = "AlarmService"
-//            val descriptionText = ""
-            val importance = NotificationManager.IMPORTANCE_MAX
-            val mChannel = NotificationChannel("AlarmService", name, importance)
-            mChannel.setSound(null, null)
-            mChannel.enableVibration(false)
-//            mChannel.description = descriptionText
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(mChannel)
-        }
+        myNotificationManager.createAlarmChannel()
         val content = event?.toString() ?: "null"
         val notification: Notification = NotificationCompat.Builder(this, "AlarmService")
             .setContentTitle("Ring")

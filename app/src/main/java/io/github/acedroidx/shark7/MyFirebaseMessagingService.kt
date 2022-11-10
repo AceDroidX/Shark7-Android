@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -18,6 +17,9 @@ import javax.inject.Inject
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     lateinit var settingsRepository: SettingsRepository
+
+    @Inject
+    lateinit var myNotificationManager: MyNotificationManager
 
     // https://stackoverflow.com/questions/63405673/how-to-call-suspend-function-from-service-android
     private val job = SupervisorJob()
@@ -34,10 +36,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
             Log.d("MyFirebaseMessagingService", "Message data payload: ${remoteMessage.data}")
+            val data = Shark7FcmData(remoteMessage.data)
+            val event = Gson().fromJson(data.event, Shark7Event::class.java)
+            if (data.is_show_notification != "false") {
+                myNotificationManager.sendEvent(event)
+            }
             runBlocking {
                 if (settingsRepository.getEnableAlarm().first()) {
-                    val data = Shark7FcmData(remoteMessage.data)
-                    val event = Gson().fromJson(data.event, Shark7Event::class.java)
                     if (settingsRepository.getAlarmScope().first().contains(event.scope)) {
                         val intentService = Intent(baseContext, AlarmService::class.java)
                         intentService.putExtra("Shark7Event", event)

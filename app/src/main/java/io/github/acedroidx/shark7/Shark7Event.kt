@@ -11,9 +11,8 @@ public class Shark7Event(
     val scope: String,
     val msg: String,
 ) : Parcelable {
-    override fun toString(): String {
-        return "<$name>($scope)\n$msg"
-    }
+    override fun toString() = "<$name>($scope)\n$msg"
+    fun getTitle() = "<$name>($scope)"
 }
 
 //data class Shark7Event(
