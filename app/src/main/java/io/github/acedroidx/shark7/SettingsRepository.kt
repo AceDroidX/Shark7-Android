@@ -5,10 +5,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.mutablePreferencesOf
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -33,4 +34,22 @@ class SettingsRepository @Inject constructor(@ApplicationContext val context: Co
         preferences[stringSetPreferencesKey("alarm_scope")] = value
     }
 
+    fun getAudioAttributes(): Flow<MyAudioAttributes> = context.dataStore.data.map { preferences ->
+        preferences[stringPreferencesKey("audio_attributes")]?.let { MyAudioAttributes.valueOf(it) }
+            ?: MyAudioAttributes.USAGE_ASSISTANT
+    }
+
+    suspend fun setAudioAttributes(value: MyAudioAttributes) =
+        context.dataStore.edit { preferences ->
+            preferences[stringPreferencesKey("audio_attributes")] = value.name
+        }
+
+    fun getHeadphoneOnly(): Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[booleanPreferencesKey("headphone_only")] ?: true
+    }
+
+    suspend fun setHeadphoneOnly(value: Boolean) =
+        context.dataStore.edit { preferences ->
+            preferences[booleanPreferencesKey("headphone_only")] = value
+        }
 }

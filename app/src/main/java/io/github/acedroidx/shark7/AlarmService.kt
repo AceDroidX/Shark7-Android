@@ -41,8 +41,7 @@ class AlarmService : Service() {
                 getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator
         } else {
-            @Suppress("DEPRECATION")
-            getSystemService(VIBRATOR_SERVICE) as Vibrator
+            @Suppress("DEPRECATION") getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
     }
@@ -56,6 +55,9 @@ class AlarmService : Service() {
         val audioAttrUsage = intent?.getIntExtra(
             "AudioAttributes", MyAudioAttributes.USAGE_ASSISTANT.value
         ) ?: MyAudioAttributes.USAGE_ASSISTANT.value
+        val headphoneOnly = intent?.getBooleanExtra(
+            "HeadphoneOnly", true
+        ) ?: false
         val disableAlarmIntent = Intent(this, MyBroadcastReceiver::class.java).apply {
             putExtra(EXTRA_NOTIFICATION_ID, 0)
             putExtra("disable_alarm", true)
@@ -69,30 +71,25 @@ class AlarmService : Service() {
             PendingIntent.getBroadcast(this, 1, stopOnceAlarmIntent, PendingIntent.FLAG_MUTABLE)
         myNotificationManager.createAlarmChannel()
         val content = event?.toString() ?: "null"
-        val notification: Notification = NotificationCompat.Builder(this, "AlarmService")
-            .setContentTitle("Ring")
-            .setContentText(content)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setOngoing(true)
-            .setSilent(true)
-            .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setPriority(NotificationCompat.PRIORITY_MAX)
+        val notification: Notification =
+            NotificationCompat.Builder(this, "AlarmService").setContentTitle("Ring")
+                .setContentText(content).setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setOngoing(true).setSilent(true).setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
 //            .setFullScreenIntent(pendingIntent, true)
-            .addAction(R.drawable.ic_launcher_foreground, "全局关闭", disableAlarmPendingIntent)
-            .addAction(R.drawable.ic_launcher_foreground, "停止本次", stopOnceAlarmPendingIntent)
-            .build()
+                .addAction(R.drawable.ic_launcher_foreground, "全局关闭", disableAlarmPendingIntent)
+                .addAction(
+                    R.drawable.ic_launcher_foreground, "停止本次", stopOnceAlarmPendingIntent
+                ).build()
 
         val ringtone = RingtoneManager.getActualDefaultRingtoneUri(
-            this.baseContext,
-            RingtoneManager.TYPE_ALARM
+            this.baseContext, RingtoneManager.TYPE_ALARM
         )
-        if (isHeadphone() && !mediaPlayer.isPlaying) {
+        if ((!headphoneOnly || isHeadphone()) && !mediaPlayer.isPlaying) {
             try {
                 mediaPlayer.setDataSource(this.baseContext, ringtone)
-                val audioAttr =
-                    AudioAttributes.Builder().setUsage(audioAttrUsage)
-                        .build()
+                val audioAttr = AudioAttributes.Builder().setUsage(audioAttrUsage).build()
                 mediaPlayer.setAudioAttributes(audioAttr)
                 mediaPlayer.setOnPreparedListener { mediaPlayer -> mediaPlayer.start() }
                 mediaPlayer.prepareAsync()

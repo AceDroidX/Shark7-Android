@@ -28,7 +28,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.acedroidx.shark7.MyAudioAttributes
 import io.github.acedroidx.shark7.ui.compose.SubscribeTopic
+import io.github.acedroidx.shark7.ui.compose.audioAttrCompose
 import io.github.acedroidx.shark7.ui.theme.Shark7Theme
 
 @AndroidEntryPoint
@@ -48,8 +50,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(contentPadding)
                             .verticalScroll(rememberScrollState())
-                            .scrollable(
-                                orientation = Orientation.Vertical,
+                            .scrollable(orientation = Orientation.Vertical,
                                 state = rememberScrollableState { delta -> 0f })
                     ) {
                         MainContent()
@@ -62,16 +63,23 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainContent() {
         val enableAlarm by viewModel.enableAlarm.collectAsState(initial = false)
+        val headphoneOnly by viewModel.headphoneOnly.collectAsState(initial = true)
+        val audioAttr by viewModel.audioAttributes.collectAsState(initial = MyAudioAttributes.USAGE_ASSISTANT)
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "Enable Alarm",
-                    color = MaterialTheme.colorScheme.onBackground
+                    "Enable Alarm", color = MaterialTheme.colorScheme.onBackground
                 )
-                Switch(
-                    checked = enableAlarm,
-                    onCheckedChange = { viewModel.setEnableAlarm(it) })
+                Switch(checked = enableAlarm, onCheckedChange = { viewModel.setEnableAlarm(it) })
             }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Headphone Audio only", color = MaterialTheme.colorScheme.onBackground
+                )
+                Switch(checked = headphoneOnly,
+                    onCheckedChange = { viewModel.setHeadphoneOnly(it) })
+            }
+            audioAttrCompose(audioAttr) { viewModel.setAudioAttributes(it) }
             Button(onClick = { viewModel.openAlarmScopeActivity(this@MainActivity) }) {
                 Text(text = "Open AlarmScopeActivity")
             }
