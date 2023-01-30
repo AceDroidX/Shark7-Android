@@ -88,6 +88,7 @@ class AlarmService : Service() {
         )
         if ((!headphoneOnly || isHeadphone()) && !mediaPlayer.isPlaying) {
             try {
+                mediaPlayer.reset()
                 mediaPlayer.setDataSource(this.baseContext, ringtone)
                 val audioAttr = AudioAttributes.Builder().setUsage(audioAttrUsage).build()
                 mediaPlayer.setAudioAttributes(audioAttr)
