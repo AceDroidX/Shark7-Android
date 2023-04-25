@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.acedroidx.shark7.ui.compose.AudioInfo
 import io.github.acedroidx.shark7.ui.compose.FcmTokenInfo
+import io.github.acedroidx.shark7.ui.compose.PebbleTest
 import io.github.acedroidx.shark7.ui.compose.ServiceTest
 import io.github.acedroidx.shark7.ui.compose.SubscribeTopic
 import io.github.acedroidx.shark7.ui.theme.Shark7Theme
@@ -54,6 +55,7 @@ class DebugActivity : ComponentActivity() {
                                 FcmTokenInfo.Composable()
                                 AudioInfo.Composable()
                                 SubscribeTopic.Composable()
+                                PebbleTest.Composable()
                             }
                         }
                     }
