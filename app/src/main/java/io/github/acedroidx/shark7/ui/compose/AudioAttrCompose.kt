@@ -12,7 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import io.github.acedroidx.shark7.MyAudioAttributes
+import io.github.acedroidx.shark7.model.MyAudioAttributes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

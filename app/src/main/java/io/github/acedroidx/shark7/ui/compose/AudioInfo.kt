@@ -16,7 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
-import io.github.acedroidx.shark7.AudioDeviceType
+import io.github.acedroidx.shark7.model.AudioDeviceType
 
 class AudioInfo(val routeInfo: MutableState<String>, val audioDevicesInfo: MutableState<String>) {
     companion object {

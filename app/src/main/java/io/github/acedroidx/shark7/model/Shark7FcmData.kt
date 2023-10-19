@@ -1,4 +1,4 @@
-package io.github.acedroidx.shark7
+package io.github.acedroidx.shark7.model
 
 public class Shark7FcmData(map: Map<String, String>) {
     val event by map

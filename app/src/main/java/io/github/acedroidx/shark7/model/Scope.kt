@@ -1,4 +1,4 @@
-package io.github.acedroidx.shark7
+package io.github.acedroidx.shark7.model
 
 enum class Scope(val id: String, val desc: String) {
     Log_Debug("Log.Debug","Debug"),

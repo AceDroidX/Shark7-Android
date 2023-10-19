@@ -28,7 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.acedroidx.shark7.MyAudioAttributes
+import io.github.acedroidx.shark7.model.MyAudioAttributes
 import io.github.acedroidx.shark7.ui.compose.SubscribeTopic
 import io.github.acedroidx.shark7.ui.compose.audioAttrCompose
 import io.github.acedroidx.shark7.ui.theme.Shark7Theme

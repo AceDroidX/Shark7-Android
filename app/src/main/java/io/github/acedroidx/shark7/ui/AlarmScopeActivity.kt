@@ -18,7 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.acedroidx.shark7.Scope
+import io.github.acedroidx.shark7.model.Scope
 import io.github.acedroidx.shark7.ui.theme.Shark7Theme
 
 @AndroidEntryPoint

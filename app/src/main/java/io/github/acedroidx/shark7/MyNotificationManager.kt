@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.github.acedroidx.shark7.model.Shark7Event
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.acedroidx.shark7.MyAudioAttributes
+import io.github.acedroidx.shark7.model.MyAudioAttributes
 import io.github.acedroidx.shark7.SettingsRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject

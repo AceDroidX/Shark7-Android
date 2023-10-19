@@ -1,4 +1,4 @@
-package io.github.acedroidx.shark7
+package io.github.acedroidx.shark7.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

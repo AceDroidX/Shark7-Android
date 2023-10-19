@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import io.github.acedroidx.shark7.AlarmService
-import io.github.acedroidx.shark7.MyAudioAttributes
+import io.github.acedroidx.shark7.model.MyAudioAttributes
 
 object ServiceTest {
     @Composable

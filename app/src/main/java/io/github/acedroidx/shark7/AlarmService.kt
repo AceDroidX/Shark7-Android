@@ -24,6 +24,9 @@ import java.util.Timer
 import java.util.TimerTask
 import javax.inject.Inject
 import io.github.acedroidx.shark7.GadgetCall.sendGadgetCall
+import io.github.acedroidx.shark7.model.AudioDeviceType
+import io.github.acedroidx.shark7.model.MyAudioAttributes
+import io.github.acedroidx.shark7.model.Shark7Event
 
 @AndroidEntryPoint
 class AlarmService : Service() {
