@@ -63,8 +63,10 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainContent() {
         val enableAlarm by viewModel.enableAlarm.collectAsState(initial = false)
+        val enableAudio by viewModel.enableAudio.collectAsState(initial = true)
         val headphoneOnly by viewModel.headphoneOnly.collectAsState(initial = true)
         val audioAttr by viewModel.audioAttributes.collectAsState(initial = MyAudioAttributes.USAGE_ASSISTANT)
+        val enableGadgetCall by viewModel.enableGadgetCall.collectAsState(initial = false)
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -74,12 +76,24 @@ class MainActivity : ComponentActivity() {
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
+                    "Enable Audio", color = MaterialTheme.colorScheme.onBackground
+                )
+                Switch(checked = enableAudio, onCheckedChange = { viewModel.setEnableAudio(it) })
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
                     "Headphone Audio only", color = MaterialTheme.colorScheme.onBackground
                 )
                 Switch(checked = headphoneOnly,
                     onCheckedChange = { viewModel.setHeadphoneOnly(it) })
             }
             audioAttrCompose(audioAttr) { viewModel.setAudioAttributes(it) }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Enable Gadget Call", color = MaterialTheme.colorScheme.onBackground
+                )
+                Switch(checked = enableGadgetCall, onCheckedChange = { viewModel.setEnableGadgetCall(it) })
+            }
             Button(onClick = { viewModel.openAlarmScopeActivity(this@MainActivity) }) {
                 Text(text = "Open AlarmScopeActivity")
             }

@@ -44,12 +44,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             runBlocking {
                 if (settingsRepository.getEnableAlarm().first()) {
                     if (settingsRepository.getAlarmScope().first().contains(event.scope)) {
+                        val enableAudio = settingsRepository.getEnableAudio()
                         val audioAttr = settingsRepository.getAudioAttributes()
                         val headphoneOnly = settingsRepository.getHeadphoneOnly()
+                        val enableGadgetCall = settingsRepository.getEnableGadgetCall()
                         val intentService = Intent(baseContext, AlarmService::class.java)
                         intentService.putExtra("Shark7Event", event)
+                        intentService.putExtra("EnableAudio", enableAudio.first())
                         intentService.putExtra("AudioAttributes", audioAttr.first().value)
                         intentService.putExtra("HeadphoneOnly", headphoneOnly.first())
+                        intentService.putExtra("EnableGadgetCall", enableGadgetCall.first())
                         baseContext.startService(intentService)
                     }
                 }

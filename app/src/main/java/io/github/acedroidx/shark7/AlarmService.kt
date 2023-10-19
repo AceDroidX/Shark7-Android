@@ -23,6 +23,7 @@ import java.io.IOException
 import java.util.Timer
 import java.util.TimerTask
 import javax.inject.Inject
+import io.github.acedroidx.shark7.GadgetCall.sendGadgetCall
 
 @AndroidEntryPoint
 class AlarmService : Service() {
@@ -51,12 +52,23 @@ class AlarmService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val event = intent?.getParcelableExtra("Shark7Event", Shark7Event::class.java)
+        val event = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableExtra("Shark7Event", Shark7Event::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent?.getParcelableExtra("Shark7Event")
+        }
+        val enableAudio = intent?.getBooleanExtra(
+            "EnableAudio", true
+        ) ?: true
         val audioAttrUsage = intent?.getIntExtra(
             "AudioAttributes", MyAudioAttributes.USAGE_ASSISTANT.value
         ) ?: MyAudioAttributes.USAGE_ASSISTANT.value
         val headphoneOnly = intent?.getBooleanExtra(
             "HeadphoneOnly", true
+        ) ?: false
+        val enableGadgetCall = intent?.getBooleanExtra(
+            "EnableGadgetCall", false
         ) ?: false
         val disableAlarmIntent = Intent(this, MyBroadcastReceiver::class.java).apply {
             putExtra(EXTRA_NOTIFICATION_ID, 0)
@@ -83,25 +95,34 @@ class AlarmService : Service() {
                     R.drawable.ic_launcher_foreground, "停止本次", stopOnceAlarmPendingIntent
                 ).build()
 
-        val ringtone = RingtoneManager.getActualDefaultRingtoneUri(
-            this.baseContext, RingtoneManager.TYPE_ALARM
-        )
-        if ((!headphoneOnly || isHeadphone()) && !mediaPlayer.isPlaying) {
-            try {
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(this.baseContext, ringtone)
-                val audioAttr = AudioAttributes.Builder().setUsage(audioAttrUsage).build()
-                mediaPlayer.setAudioAttributes(audioAttr)
-                mediaPlayer.setOnPreparedListener { mediaPlayer -> mediaPlayer.start() }
-                mediaPlayer.prepareAsync()
-            } catch (ex: IOException) {
-                ex.printStackTrace()
+        if (enableAudio) {
+            val ringtone = RingtoneManager.getActualDefaultRingtoneUri(
+                this.baseContext, RingtoneManager.TYPE_ALARM
+            )
+            if ((!headphoneOnly || isHeadphone()) && !mediaPlayer.isPlaying) {
+                try {
+                    mediaPlayer.reset()
+                    mediaPlayer.setDataSource(this.baseContext, ringtone)
+                    val audioAttr = AudioAttributes.Builder().setUsage(audioAttrUsage).build()
+                    mediaPlayer.setAudioAttributes(audioAttr)
+                    mediaPlayer.setOnPreparedListener { mediaPlayer -> mediaPlayer.start() }
+                    mediaPlayer.prepareAsync()
+                } catch (ex: IOException) {
+                    ex.printStackTrace()
+                }
             }
         }
+        if (enableGadgetCall) {
+            sendGadgetCall(this, event?.msg ?: "null event")
+        }
         val pattern = longArrayOf(0, 100, 1000)
-        val vibAttr =
-            VibrationAttributes.Builder().setUsage(VibrationAttributes.USAGE_ALARM).build()
-        vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0), vibAttr)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val vibAttr =
+                VibrationAttributes.Builder().setUsage(VibrationAttributes.USAGE_ALARM).build()
+            vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0), vibAttr)
+        } else {
+            vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0))
+        }
 
         val timerTask = object : TimerTask() {
             override fun run() {
@@ -115,11 +136,11 @@ class AlarmService : Service() {
 
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Shark7::MyWakelockTag").apply {
-                acquire()
+                acquire(3 * 60 * 1000L)
             }
         }
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {

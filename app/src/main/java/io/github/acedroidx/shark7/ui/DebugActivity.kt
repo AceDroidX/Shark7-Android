@@ -21,6 +21,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.acedroidx.shark7.ui.compose.AudioInfo
+import io.github.acedroidx.shark7.ui.compose.GadgetCallTest
 import io.github.acedroidx.shark7.ui.compose.FcmTokenInfo
 import io.github.acedroidx.shark7.ui.compose.PebbleTest
 import io.github.acedroidx.shark7.ui.compose.ServiceTest
@@ -56,6 +57,7 @@ class DebugActivity : ComponentActivity() {
                                 AudioInfo.Composable()
                                 SubscribeTopic.Composable()
                                 PebbleTest.Composable()
+                                GadgetCallTest.Composable()
                             }
                         }
                     }

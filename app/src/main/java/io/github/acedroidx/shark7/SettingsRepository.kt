@@ -52,4 +52,22 @@ class SettingsRepository @Inject constructor(@ApplicationContext val context: Co
         context.dataStore.edit { preferences ->
             preferences[booleanPreferencesKey("headphone_only")] = value
         }
+
+    fun getEnableAudio(): Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[booleanPreferencesKey("enable_audio")] ?: true
+    }
+
+    suspend fun setEnableAudio(value: Boolean) =
+        context.dataStore.edit { preferences ->
+            preferences[booleanPreferencesKey("enable_audio")] = value
+        }
+
+    fun getEnableGadgetCall(): Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[booleanPreferencesKey("enable_gadget_call")] ?: false
+    }
+
+    suspend fun setEnableGadgetCall(value: Boolean) =
+        context.dataStore.edit { preferences ->
+            preferences[booleanPreferencesKey("enable_gadget_call")] = value
+        }
 }

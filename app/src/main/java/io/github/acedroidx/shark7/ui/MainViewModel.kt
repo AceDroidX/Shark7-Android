@@ -15,8 +15,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(val settingsRepository: SettingsRepository) : ViewModel() {
     val enableAlarm = settingsRepository.getEnableAlarm()
+    val enableAudio = settingsRepository.getEnableAudio()
     val audioAttributes = settingsRepository.getAudioAttributes()
     val headphoneOnly = settingsRepository.getHeadphoneOnly()
+    val enableGadgetCall = settingsRepository.getEnableGadgetCall()
 
     fun setEnableAlarm(value: Boolean) {
         Log.d("MainViewModel","setEnableAlarm:$value")
@@ -36,6 +38,20 @@ class MainViewModel @Inject constructor(val settingsRepository: SettingsReposito
         Log.d("MainViewModel","setHeadphoneOnly:$value")
         viewModelScope.launch {
             settingsRepository.setHeadphoneOnly(value)
+        }
+    }
+
+    fun setEnableAudio(value: Boolean) {
+        Log.d("MainViewModel","setEnableAudio:$value")
+        viewModelScope.launch {
+            settingsRepository.setEnableAudio(value)
+        }
+    }
+
+    fun setEnableGadgetCall(value: Boolean) {
+        Log.d("MainViewModel","setEnableGadgetCall:$value")
+        viewModelScope.launch {
+            settingsRepository.setEnableGadgetCall(value)
         }
     }
 
