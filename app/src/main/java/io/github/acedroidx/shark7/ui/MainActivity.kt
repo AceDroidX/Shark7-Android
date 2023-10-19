@@ -92,7 +92,8 @@ class MainActivity : ComponentActivity() {
                 Text(
                     "Enable Gadget Call", color = MaterialTheme.colorScheme.onBackground
                 )
-                Switch(checked = enableGadgetCall, onCheckedChange = { viewModel.setEnableGadgetCall(it) })
+                Switch(checked = enableGadgetCall,
+                    onCheckedChange = { viewModel.setEnableGadgetCall(it) })
             }
             Button(onClick = { viewModel.openAlarmScopeActivity(this@MainActivity) }) {
                 Text(text = "Open AlarmScopeActivity")

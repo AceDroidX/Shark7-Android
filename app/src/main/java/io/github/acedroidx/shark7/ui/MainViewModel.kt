@@ -21,35 +21,35 @@ class MainViewModel @Inject constructor(val settingsRepository: SettingsReposito
     val enableGadgetCall = settingsRepository.getEnableGadgetCall()
 
     fun setEnableAlarm(value: Boolean) {
-        Log.d("MainViewModel","setEnableAlarm:$value")
+        Log.d("MainViewModel", "setEnableAlarm:$value")
         viewModelScope.launch {
             settingsRepository.setEnableAlarm(value)
         }
     }
 
     fun setAudioAttributes(value: MyAudioAttributes) {
-        Log.d("MainViewModel","setAudioAttributes:$value")
+        Log.d("MainViewModel", "setAudioAttributes:$value")
         viewModelScope.launch {
             settingsRepository.setAudioAttributes(value)
         }
     }
 
     fun setHeadphoneOnly(value: Boolean) {
-        Log.d("MainViewModel","setHeadphoneOnly:$value")
+        Log.d("MainViewModel", "setHeadphoneOnly:$value")
         viewModelScope.launch {
             settingsRepository.setHeadphoneOnly(value)
         }
     }
 
     fun setEnableAudio(value: Boolean) {
-        Log.d("MainViewModel","setEnableAudio:$value")
+        Log.d("MainViewModel", "setEnableAudio:$value")
         viewModelScope.launch {
             settingsRepository.setEnableAudio(value)
         }
     }
 
     fun setEnableGadgetCall(value: Boolean) {
-        Log.d("MainViewModel","setEnableGadgetCall:$value")
+        Log.d("MainViewModel", "setEnableGadgetCall:$value")
         viewModelScope.launch {
             settingsRepository.setEnableGadgetCall(value)
         }
@@ -59,6 +59,7 @@ class MainViewModel @Inject constructor(val settingsRepository: SettingsReposito
         val intent = Intent(context, DebugActivity::class.java)
         context.startActivity(intent)
     }
+
     fun openAlarmScopeActivity(context: Context) {
         val intent = Intent(context, AlarmScopeActivity::class.java)
         context.startActivity(intent)

@@ -6,6 +6,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.acedroidx.shark7.model.AlarmConfig
 import io.github.acedroidx.shark7.model.Shark7Event
 import io.github.acedroidx.shark7.model.Shark7FcmData
 import kotlinx.coroutines.CoroutineScope
@@ -46,16 +47,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             runBlocking {
                 if (settingsRepository.getEnableAlarm().first()) {
                     if (settingsRepository.getAlarmScope().first().contains(event.scope)) {
-                        val enableAudio = settingsRepository.getEnableAudio()
-                        val audioAttr = settingsRepository.getAudioAttributes()
-                        val headphoneOnly = settingsRepository.getHeadphoneOnly()
-                        val enableGadgetCall = settingsRepository.getEnableGadgetCall()
+                        val alarmConfig = AlarmConfig(
+                            settingsRepository.getEnableAudio().first(),
+                            settingsRepository.getAudioAttributes().first(),
+                            settingsRepository.getHeadphoneOnly().first(),
+                            settingsRepository.getEnableGadgetCall().first()
+                        )
                         val intentService = Intent(baseContext, AlarmService::class.java)
                         intentService.putExtra("Shark7Event", event)
-                        intentService.putExtra("EnableAudio", enableAudio.first())
-                        intentService.putExtra("AudioAttributes", audioAttr.first().value)
-                        intentService.putExtra("HeadphoneOnly", headphoneOnly.first())
-                        intentService.putExtra("EnableGadgetCall", enableGadgetCall.first())
+                        intentService.putExtra("AlarmConfig", alarmConfig)
                         baseContext.startService(intentService)
                     }
                 }

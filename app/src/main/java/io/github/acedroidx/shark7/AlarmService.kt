@@ -24,6 +24,7 @@ import java.util.Timer
 import java.util.TimerTask
 import javax.inject.Inject
 import io.github.acedroidx.shark7.GadgetCall.sendGadgetCall
+import io.github.acedroidx.shark7.model.AlarmConfig
 import io.github.acedroidx.shark7.model.AudioDeviceType
 import io.github.acedroidx.shark7.model.MyAudioAttributes
 import io.github.acedroidx.shark7.model.Shark7Event
@@ -58,21 +59,14 @@ class AlarmService : Service() {
         val event = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent?.getParcelableExtra("Shark7Event", Shark7Event::class.java)
         } else {
-            @Suppress("DEPRECATION")
-            intent?.getParcelableExtra("Shark7Event")
+            @Suppress("DEPRECATION") intent?.getParcelableExtra("Shark7Event")
         }
-        val enableAudio = intent?.getBooleanExtra(
-            "EnableAudio", true
-        ) ?: true
-        val audioAttrUsage = intent?.getIntExtra(
-            "AudioAttributes", MyAudioAttributes.USAGE_ASSISTANT.value
-        ) ?: MyAudioAttributes.USAGE_ASSISTANT.value
-        val headphoneOnly = intent?.getBooleanExtra(
-            "HeadphoneOnly", true
-        ) ?: false
-        val enableGadgetCall = intent?.getBooleanExtra(
-            "EnableGadgetCall", false
-        ) ?: false
+        val alarmConfig = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableExtra("AlarmConfig", AlarmConfig::class.java)
+        } else {
+            @Suppress("DEPRECATION") intent?.getParcelableExtra("AlarmConfig")
+        } ?: AlarmConfig(true, MyAudioAttributes.USAGE_ASSISTANT, true, false)
+
         val disableAlarmIntent = Intent(this, MyBroadcastReceiver::class.java).apply {
             putExtra(EXTRA_NOTIFICATION_ID, 0)
             putExtra("disable_alarm", true)
@@ -98,15 +92,16 @@ class AlarmService : Service() {
                     R.drawable.ic_launcher_foreground, "停止本次", stopOnceAlarmPendingIntent
                 ).build()
 
-        if (enableAudio) {
+        if (alarmConfig.enableAudio) {
             val ringtone = RingtoneManager.getActualDefaultRingtoneUri(
                 this.baseContext, RingtoneManager.TYPE_ALARM
             )
-            if ((!headphoneOnly || isHeadphone()) && !mediaPlayer.isPlaying) {
+            if ((!alarmConfig.headphoneOnly || isHeadphone()) && !mediaPlayer.isPlaying) {
                 try {
                     mediaPlayer.reset()
                     mediaPlayer.setDataSource(this.baseContext, ringtone)
-                    val audioAttr = AudioAttributes.Builder().setUsage(audioAttrUsage).build()
+                    val audioAttr =
+                        AudioAttributes.Builder().setUsage(alarmConfig.audioAttr.value).build()
                     mediaPlayer.setAudioAttributes(audioAttr)
                     mediaPlayer.setOnPreparedListener { mediaPlayer -> mediaPlayer.start() }
                     mediaPlayer.prepareAsync()
@@ -115,7 +110,7 @@ class AlarmService : Service() {
                 }
             }
         }
-        if (enableGadgetCall) {
+        if (alarmConfig.enableGadgetCall) {
             sendGadgetCall(this, event?.msg ?: "null event")
         }
         val pattern = longArrayOf(0, 100, 1000)

@@ -18,7 +18,6 @@ import javax.inject.Singleton
 @Singleton
 class SettingsRepository @Inject constructor(@ApplicationContext val context: Context) {
     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
     fun getEnableAlarm() = context.dataStore.data.map { preferences ->
         preferences[booleanPreferencesKey("enable_alarm")] ?: false
     }
@@ -49,26 +48,23 @@ class SettingsRepository @Inject constructor(@ApplicationContext val context: Co
         preferences[booleanPreferencesKey("headphone_only")] ?: true
     }
 
-    suspend fun setHeadphoneOnly(value: Boolean) =
-        context.dataStore.edit { preferences ->
-            preferences[booleanPreferencesKey("headphone_only")] = value
-        }
+    suspend fun setHeadphoneOnly(value: Boolean) = context.dataStore.edit { preferences ->
+        preferences[booleanPreferencesKey("headphone_only")] = value
+    }
 
     fun getEnableAudio(): Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[booleanPreferencesKey("enable_audio")] ?: true
     }
 
-    suspend fun setEnableAudio(value: Boolean) =
-        context.dataStore.edit { preferences ->
-            preferences[booleanPreferencesKey("enable_audio")] = value
-        }
+    suspend fun setEnableAudio(value: Boolean) = context.dataStore.edit { preferences ->
+        preferences[booleanPreferencesKey("enable_audio")] = value
+    }
 
     fun getEnableGadgetCall(): Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[booleanPreferencesKey("enable_gadget_call")] ?: false
     }
 
-    suspend fun setEnableGadgetCall(value: Boolean) =
-        context.dataStore.edit { preferences ->
-            preferences[booleanPreferencesKey("enable_gadget_call")] = value
-        }
+    suspend fun setEnableGadgetCall(value: Boolean) = context.dataStore.edit { preferences ->
+        preferences[booleanPreferencesKey("enable_gadget_call")] = value
+    }
 }
