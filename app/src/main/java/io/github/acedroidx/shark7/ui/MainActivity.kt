@@ -1,6 +1,7 @@
 package io.github.acedroidx.shark7.ui
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,15 +24,22 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.acedroidx.shark7.Utils.formatMilliseconds
 import io.github.acedroidx.shark7.model.MyAudioAttributes
 import io.github.acedroidx.shark7.ui.compose.SubscribeTopic
 import io.github.acedroidx.shark7.ui.compose.audioAttrCompose
 import io.github.acedroidx.shark7.ui.theme.Shark7Theme
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -41,7 +49,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         SubscribeTopic.subscribeTopic("main")
-        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
         setContent {
             Shark7Theme {
                 Scaffold(topBar = { TopAppBar(title = { Text("Shark7") }) }) { contentPadding ->
@@ -67,12 +77,32 @@ class MainActivity : ComponentActivity() {
         val headphoneOnly by viewModel.headphoneOnly.collectAsState(initial = true)
         val audioAttr by viewModel.audioAttributes.collectAsState(initial = MyAudioAttributes.USAGE_ASSISTANT)
         val enableGadgetCall by viewModel.enableGadgetCall.collectAsState(initial = false)
+        val pauseAlarmTo by viewModel.pauseAlarmTo.collectAsState(initial = 0)
+        var timeLeft by remember { mutableLongStateOf(0) }
+        LaunchedEffect(pauseAlarmTo) {
+            timeLeft = pauseAlarmTo - System.currentTimeMillis()
+            while (timeLeft > 0) {
+                delay(1.seconds)
+                timeLeft -= 1000
+            }
+        }
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     "Enable Alarm", color = MaterialTheme.colorScheme.onBackground
                 )
                 Switch(checked = enableAlarm, onCheckedChange = { viewModel.setEnableAlarm(it) })
+            }
+            if (timeLeft > 0) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        "Pause for ${formatMilliseconds(timeLeft)}",
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Button(onClick = { viewModel.setPauseAlarmTo(0) }) {
+                        Text("Reset")
+                    }
+                }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

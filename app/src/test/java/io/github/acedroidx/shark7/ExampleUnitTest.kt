@@ -1,5 +1,6 @@
 package io.github.acedroidx.shark7
 
+import io.github.acedroidx.shark7.Utils.formatMilliseconds
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -13,5 +14,11 @@ class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
+    }
+
+    @Test
+    fun format() {
+        assertEquals("1m01s",formatMilliseconds(61 * 1000))
+        assertEquals("6s",formatMilliseconds(6 * 1000))
     }
 }

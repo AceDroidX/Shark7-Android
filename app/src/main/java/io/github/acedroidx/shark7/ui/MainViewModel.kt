@@ -19,6 +19,7 @@ class MainViewModel @Inject constructor(val settingsRepository: SettingsReposito
     val audioAttributes = settingsRepository.getAudioAttributes()
     val headphoneOnly = settingsRepository.getHeadphoneOnly()
     val enableGadgetCall = settingsRepository.getEnableGadgetCall()
+    val pauseAlarmTo = settingsRepository.getPauseAlarmTo()
 
     fun setEnableAlarm(value: Boolean) {
         Log.d("MainViewModel", "setEnableAlarm:$value")
@@ -52,6 +53,13 @@ class MainViewModel @Inject constructor(val settingsRepository: SettingsReposito
         Log.d("MainViewModel", "setEnableGadgetCall:$value")
         viewModelScope.launch {
             settingsRepository.setEnableGadgetCall(value)
+        }
+    }
+
+    fun setPauseAlarmTo(value: Long) {
+        Log.d("MainViewModel", "setPauseAlarmTo:$value")
+        viewModelScope.launch {
+            settingsRepository.setPauseAlarmTo(value)
         }
     }
 

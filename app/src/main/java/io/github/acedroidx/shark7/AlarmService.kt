@@ -74,10 +74,16 @@ class AlarmService : Service() {
         val disableAlarmPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(this, 0, disableAlarmIntent, PendingIntent.FLAG_MUTABLE)
         val stopOnceAlarmIntent = Intent(this, MyBroadcastReceiver::class.java).apply {
-            putExtra(EXTRA_NOTIFICATION_ID, 0)
+            putExtra(EXTRA_NOTIFICATION_ID, 1)
         }
         val stopOnceAlarmPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(this, 1, stopOnceAlarmIntent, PendingIntent.FLAG_MUTABLE)
+        val pause5minAlarmIntent = Intent(this, MyBroadcastReceiver::class.java).apply {
+            putExtra(EXTRA_NOTIFICATION_ID, 2)
+            putExtra("pause_alarm", 5 * 60 * 1000)
+        }
+        val pause5minAlarmPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(this, 2, pause5minAlarmIntent, PendingIntent.FLAG_MUTABLE)
         myNotificationManager.createAlarmChannel()
         val content = event?.toString() ?: "null"
         val notification: Notification =
@@ -90,6 +96,8 @@ class AlarmService : Service() {
                 .addAction(R.drawable.ic_launcher_foreground, "全局关闭", disableAlarmPendingIntent)
                 .addAction(
                     R.drawable.ic_launcher_foreground, "停止本次", stopOnceAlarmPendingIntent
+                ).addAction(
+                    R.drawable.ic_launcher_foreground, "暂停5分钟", pause5minAlarmPendingIntent
                 ).build()
 
         if (alarmConfig.enableAudio) {

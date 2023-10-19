@@ -46,7 +46,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
             runBlocking {
                 if (settingsRepository.getEnableAlarm().first()) {
-                    if (settingsRepository.getAlarmScope().first().contains(event.scope)) {
+                    if (settingsRepository.getPauseAlarmTo().first() > System.currentTimeMillis()) {
+                        // 暂停Alarm中
+                        Log.d(
+                            "MyFirebaseMessagingService", "getPauseAlarmTo() ${
+                                settingsRepository.getPauseAlarmTo().first()
+                            } > currentTimeMillis() ${System.currentTimeMillis()}"
+                        )
+                    } else if (settingsRepository.getAlarmScope().first().contains(event.scope)) {
                         val alarmConfig = AlarmConfig(
                             settingsRepository.getEnableAudio().first(),
                             settingsRepository.getAudioAttributes().first(),

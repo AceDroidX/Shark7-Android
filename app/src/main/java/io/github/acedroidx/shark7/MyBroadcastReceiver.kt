@@ -16,13 +16,18 @@ class MyBroadcastReceiver : BroadcastReceiver() {
     lateinit var settingsRepository: SettingsRepository
     override fun onReceive(context: Context, intent: Intent) {
         val intentService = Intent(
-            context,
-            AlarmService::class.java
+            context, AlarmService::class.java
         )
         if (intent.getBooleanExtra("disable_alarm", false)) {
-            @OptIn(DelicateCoroutinesApi::class)
-            GlobalScope.launch(Dispatchers.IO) {
+            @OptIn(DelicateCoroutinesApi::class) GlobalScope.launch(Dispatchers.IO) {
                 settingsRepository.setEnableAlarm(false)
+            }
+        } else if (intent.hasExtra("pause_alarm")) {
+            val pauseTime = intent.getIntExtra("pause_alarm", 0)
+            if (pauseTime > 0) {
+                @OptIn(DelicateCoroutinesApi::class) GlobalScope.launch(Dispatchers.IO) {
+                    settingsRepository.setPauseAlarmTo(System.currentTimeMillis() + pauseTime)
+                }
             }
         }
         context.stopService(intentService)

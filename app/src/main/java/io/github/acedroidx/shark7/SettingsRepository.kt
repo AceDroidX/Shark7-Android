@@ -5,6 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -66,5 +68,13 @@ class SettingsRepository @Inject constructor(@ApplicationContext val context: Co
 
     suspend fun setEnableGadgetCall(value: Boolean) = context.dataStore.edit { preferences ->
         preferences[booleanPreferencesKey("enable_gadget_call")] = value
+    }
+
+    fun getPauseAlarmTo(): Flow<Long> = context.dataStore.data.map { preferences ->
+        preferences[longPreferencesKey("pause_alarm_to")] ?: 0
+    }
+
+    suspend fun setPauseAlarmTo(value: Long) = context.dataStore.edit { preferences ->
+        preferences[longPreferencesKey("pause_alarm_to")] = value
     }
 }
