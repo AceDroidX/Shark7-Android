@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
     id 'com.google.dagger.hilt.android'
     // Add the Google services Gradle plugin
     id 'com.google.gms.google-services'
@@ -54,7 +54,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.3'
+        kotlinCompilerExtensionVersion '1.5.3'
     }
     packagingOptions {
         resources {
@@ -62,10 +62,6 @@ android {
         }
     }
     namespace 'io.github.acedroidx.shark7'
-}
-
-kapt {
-    correctErrorTypes true
 }
 
 dependencies {
@@ -83,7 +79,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
     implementation "com.google.dagger:hilt-android:$dagger_version"
-    kapt "com.google.dagger:hilt-compiler:$dagger_version"
+    ksp "com.google.dagger:hilt-compiler:$dagger_version"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     implementation 'androidx.compose.runtime:runtime-livedata:1.5.4'
