@@ -55,6 +55,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         )
                     } else if (settingsRepository.getAlarmScope().first().contains(event.scope)) {
                         val alarmConfig = AlarmConfig(
+                            settingsRepository.getEnableVibrate().first(),
                             settingsRepository.getEnableAudio().first(),
                             settingsRepository.getAudioAttributes().first(),
                             settingsRepository.getHeadphoneOnly().first(),

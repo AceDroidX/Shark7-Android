@@ -65,7 +65,7 @@ class AlarmService : Service() {
             intent?.getParcelableExtra("AlarmConfig", AlarmConfig::class.java)
         } else {
             @Suppress("DEPRECATION") intent?.getParcelableExtra("AlarmConfig")
-        } ?: AlarmConfig(true, MyAudioAttributes.USAGE_ASSISTANT, true, false)
+        } ?: AlarmConfig(true, true, MyAudioAttributes.USAGE_ASSISTANT, true, false)
 
         val disableAlarmIntent = Intent(this, MyBroadcastReceiver::class.java).apply {
             putExtra(EXTRA_NOTIFICATION_ID, 0)
@@ -121,13 +121,15 @@ class AlarmService : Service() {
         if (alarmConfig.enableGadgetCall) {
             sendGadgetCall(this, event?.msg ?: "null event")
         }
-        val pattern = longArrayOf(0, 100, 1000)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val vibAttr =
-                VibrationAttributes.Builder().setUsage(VibrationAttributes.USAGE_ALARM).build()
-            vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0), vibAttr)
-        } else {
-            vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0))
+        if (alarmConfig.enableVibrate) {
+            val pattern = longArrayOf(0, 100, 1000)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val vibAttr =
+                    VibrationAttributes.Builder().setUsage(VibrationAttributes.USAGE_ALARM).build()
+                vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0), vibAttr)
+            } else {
+                vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0))
+            }
         }
 
         val timerTask = object : TimerTask() {

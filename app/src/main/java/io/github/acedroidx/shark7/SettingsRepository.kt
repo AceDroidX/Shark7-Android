@@ -54,6 +54,14 @@ class SettingsRepository @Inject constructor(@ApplicationContext val context: Co
         preferences[booleanPreferencesKey("headphone_only")] = value
     }
 
+    fun getEnableVibrate(): Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[booleanPreferencesKey("enable_vibrate")] ?: true
+    }
+
+    suspend fun setEnableVibrate(value: Boolean) = context.dataStore.edit { preferences ->
+        preferences[booleanPreferencesKey("enable_vibrate")] = value
+    }
+
     fun getEnableAudio(): Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[booleanPreferencesKey("enable_audio")] ?: true
     }

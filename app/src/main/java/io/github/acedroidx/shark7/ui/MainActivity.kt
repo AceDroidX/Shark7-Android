@@ -73,6 +73,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainContent() {
         val enableAlarm by viewModel.enableAlarm.collectAsState(initial = false)
+        val enableVibrate by viewModel.enableVibrate.collectAsState(initial = true)
         val enableAudio by viewModel.enableAudio.collectAsState(initial = true)
         val headphoneOnly by viewModel.headphoneOnly.collectAsState(initial = true)
         val audioAttr by viewModel.audioAttributes.collectAsState(initial = MyAudioAttributes.USAGE_ASSISTANT)
@@ -103,6 +104,14 @@ class MainActivity : ComponentActivity() {
                         Text("Reset")
                     }
                 }
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Enable Vibrate", color = MaterialTheme.colorScheme.onBackground
+                )
+                Switch(
+                    checked = enableVibrate,
+                    onCheckedChange = { viewModel.setEnableVibrate(it) })
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

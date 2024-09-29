@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class AlarmConfig(
+    val enableVibrate: Boolean,
     val enableAudio: Boolean,
     val audioAttr: MyAudioAttributes,
     val headphoneOnly: Boolean,
